@@ -101,6 +101,6 @@ void ApplicationSocket::readMessage ()
 void ApplicationSocket::displayError (QLocalSocket::LocalSocketError error)
 {
     if (error != PeerClosedError)
-        qWarning ("ApplicationSocket: %s", errorString ().toUtf8 ().constData ());
+        qWarning ("ApplicationSocket: %s", qPrintable (errorString ()));
 }
 
