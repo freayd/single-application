@@ -47,9 +47,9 @@ public:
     bool isRunning () const;
 
 public slots:
-    bool sendMessage   (const QString     & message,   int timeout = 500);
-    bool sendArguments (const QStringList & arguments, int timeout = 500);
-    bool sendVariant   (const QVariant    & variant,   int timeout = 500);
+    bool sendMessage   (const QString & message, int timeout = 500);
+    bool sendArguments (int timeout = 500);
+    bool sendVariant   (const QVariant & variant, int timeout = 500);
 
 signals:
     void messageReceived   (const QString     & message  );

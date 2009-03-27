@@ -149,9 +149,9 @@ bool SingleApplication::sendMessage (const QString & message, int timeout /* = 5
     return m_socket && m_socket->sendMessage (message, timeout);
 }
 
-bool SingleApplication::sendArguments (const QStringList & arguments, int timeout /* = 500 */)
+bool SingleApplication::sendArguments (int timeout /* = 500 */)
 {
-    return m_socket && m_socket->sendArguments (arguments, timeout);
+    return m_socket && m_socket->sendArguments (arguments (), timeout);
 }
 
 bool SingleApplication::sendVariant (const QVariant & variant, int timeout /* = 500 */)
