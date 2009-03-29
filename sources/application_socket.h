@@ -20,11 +20,12 @@
 #define APPLICATION_SOCKET_H
 
 #include <QtCore/QDataStream>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QVariant>
 #include <QtNetwork/QLocalSocket>
 
+
+class QString;
+class QStringList;
+class QVariant;
 
 class ApplicationSocket : public QLocalSocket
 {

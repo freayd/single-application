@@ -19,11 +19,12 @@
 #ifndef APPLICATION_SERVER_H
 #define APPLICATION_SERVER_H
 
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QVariant>
 #include <QtNetwork/QLocalServer>
 
+
+class QString;
+class QStringList;
+class QVariant;
 
 class ApplicationServer : public QLocalServer
 {

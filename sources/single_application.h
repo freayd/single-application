@@ -20,8 +20,6 @@
 #define SINGLE_APPLICATION_H
 
 #include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QVariant>
 #include <QtCore/QDataStream>
 #include <QtGui/QApplication>
 
@@ -30,6 +28,8 @@ class ApplicationServer;
 class ApplicationSocket;
 
 class QSharedMemory;
+class QStringList;
+class QVariant;
 
 class SingleApplication : public QApplication
 {

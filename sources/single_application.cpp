@@ -22,6 +22,8 @@
 #include "application_socket.h"
 
 #include <QtCore/QSharedMemory>
+#include <QtCore/QStringList>
+#include <QtCore/QVariant>
 #include <QtNetwork/QLocalServer>
 #include <QtNetwork/QLocalSocket>
 

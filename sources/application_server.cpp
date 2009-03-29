@@ -20,6 +20,10 @@
 
 #include "application_socket.h"
 
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QVariant>
+
 
 ApplicationServer::ApplicationServer (QObject * parent /* = 0 */)
     : QLocalServer (parent)

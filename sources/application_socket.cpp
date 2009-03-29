@@ -19,6 +19,9 @@
 #include "application_socket.h"
 
 #include <QtCore/QByteArray>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QVariant>
 
 
 int * ApplicationSocket::s_dataStreamVersion = 0;
