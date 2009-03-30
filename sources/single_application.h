@@ -49,12 +49,15 @@ public:
 public slots:
     bool sendMessage   (const QString & message, int timeout = 500);
     bool sendArguments (int timeout = 500);
-    bool sendVariant   (const QVariant & variant, int timeout = 500);
+    bool sendObject    (const QVariant & object, int timeout = 500);
 
 signals:
     void messageReceived   (const QString     & message  );
     void argumentsReceived (const QStringList & arguments);
-    void variantReceived   (const QVariant    & variant  );
+    void objectReceived    (const QVariant    & object   );
+
+private slots:
+    void processObject (const QVariant & object);
 
 private:
     void shareApplicationPid ();
@@ -69,4 +72,3 @@ private:
 };
 
 #endif // SINGLE_APPLICATION_H
-

@@ -22,8 +22,6 @@
 #include <QtNetwork/QLocalServer>
 
 
-class QString;
-class QStringList;
 class QVariant;
 
 class ApplicationServer : public QLocalServer
@@ -34,9 +32,7 @@ public:
     ApplicationServer (QObject * parent = 0);
 
 signals:
-    void messageReceived   (const QString     & message  );
-    void argumentsReceived (const QStringList & arguments);
-    void variantReceived   (const QVariant    & variant  );
+    void objectReceived (const QVariant & object);
 
 protected:
     void incomingConnection (quintptr socketDescriptor);
@@ -44,4 +40,3 @@ protected:
 };
 
 #endif // APPLICATION_SERVER_H
-

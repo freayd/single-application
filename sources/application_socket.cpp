@@ -19,8 +19,6 @@
 #include "application_socket.h"
 
 #include <QtCore/QByteArray>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
 
@@ -36,24 +34,12 @@ void ApplicationSocket::setDataStreamVersion (QDataStream::Version v)
 ApplicationSocket::ApplicationSocket (QObject * parent /* = 0 */)
     : QLocalSocket (parent), m_blockSize (0)
 {
-    connect (this, SIGNAL(readyRead ()), SLOT(readMessage ()));
+    connect (this, SIGNAL(readyRead ()), SLOT(readData ()));
     connect (this, SIGNAL(error (QLocalSocket::LocalSocketError)),
                    SLOT(displayError (QLocalSocket::LocalSocketError)));
 }
 
-bool ApplicationSocket::sendMessage (const QString & message, int timeout)
-{
-    QVariant variant (message);
-    return sendVariant (variant, timeout);
-}
-
-bool ApplicationSocket::sendArguments (const QStringList & arguments, int timeout)
-{
-    QVariant variant (arguments);
-    return sendVariant (variant, timeout);
-}
-
-bool ApplicationSocket::sendVariant (const QVariant & variant, int timeout)
+bool ApplicationSocket::sendObject (const QVariant & object, int timeout)
 {
     if (state () != ConnectedState)
         return false;
@@ -63,14 +49,14 @@ bool ApplicationSocket::sendVariant (const QVariant & variant, int timeout)
     if (s_dataStreamVersion)
         out.setVersion (* s_dataStreamVersion);
     out << (quint64) 0;
-    out << variant;
+    out << object;
     out.device ()->seek (0);
     out << (quint64) (block.size () - sizeof (quint64));
 
     return write (block) != -1 && waitForBytesWritten (timeout);
 }
 
-void ApplicationSocket::readMessage ()
+void ApplicationSocket::readData ()
 {
     if (state () != ConnectedState)
         return;
@@ -89,16 +75,11 @@ void ApplicationSocket::readMessage ()
     if (in.atEnd () || bytesAvailable () < (qint64) m_blockSize)
         return;
 
-    QVariant variant;
-    in >> variant;
+    QVariant object;
+    in >> object;
     m_blockSize = 0;
 
-    if (variant.type () == QVariant::String)
-        emit messageReceived (variant.toString ());
-    else if (variant.type () == QVariant::StringList)
-        emit argumentsReceived (variant.toStringList ());
-    else
-        emit variantReceived (variant);
+    emit objectReceived (object);
 }
 
 void ApplicationSocket::displayError (QLocalSocket::LocalSocketError error)
@@ -106,4 +87,3 @@ void ApplicationSocket::displayError (QLocalSocket::LocalSocketError error)
     if (error != PeerClosedError)
         qWarning ("ApplicationSocket: %s", qPrintable (errorString ()));
 }
-

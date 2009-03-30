@@ -20,8 +20,6 @@
 
 #include "application_socket.h"
 
-#include <QtCore/QString>
-#include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
 
@@ -35,13 +33,8 @@ void ApplicationServer::incomingConnection (quintptr socketDescriptor)
     ApplicationSocket * socket = new ApplicationSocket (this);
     connect (socket, SIGNAL(disconnected ()), socket, SLOT(deleteLater ()));
 
-    connect (socket, SIGNAL(messageReceived (const QString &)),
-             this,   SIGNAL(messageReceived (const QString &)));
-    connect (socket, SIGNAL(argumentsReceived (const QStringList &)),
-             this,   SIGNAL(argumentsReceived (const QStringList &)));
-    connect (socket, SIGNAL(variantReceived (const QVariant &)),
-             this,   SIGNAL(variantReceived (const QVariant &)));
+    connect (socket, SIGNAL(objectReceived (const QVariant &)),
+             this,   SIGNAL(objectReceived (const QVariant &)));
 
     socket->setSocketDescriptor (socketDescriptor);
 }
-

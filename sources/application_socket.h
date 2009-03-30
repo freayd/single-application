@@ -23,8 +23,6 @@
 #include <QtNetwork/QLocalSocket>
 
 
-class QString;
-class QStringList;
 class QVariant;
 
 class ApplicationSocket : public QLocalSocket
@@ -37,17 +35,13 @@ public:
     ApplicationSocket (QObject * parent = 0);
 
 public slots:
-    bool sendMessage   (const QString     & message,   int timeout);
-    bool sendArguments (const QStringList & arguments, int timeout);
-    bool sendVariant   (const QVariant    & variant,   int timeout);
+    bool sendObject (const QVariant & object, int timeout);
 
 signals:
-    void messageReceived   (const QString     & message  );
-    void argumentsReceived (const QStringList & arguments);
-    void variantReceived   (const QVariant    & variant  );
+    void objectReceived (const QVariant & object);
 
 private slots:
-    void readMessage ();
+    void readData ();
     void displayError (QLocalSocket::LocalSocketError error);
 
 private:
@@ -58,4 +52,3 @@ private:
 };
 
 #endif // APPLICATION_SOCKET_H
-

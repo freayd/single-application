@@ -128,14 +128,8 @@ SingleApplication::SingleApplication (const QString & key, int & argc, char ** a
         }
 
         if (m_server->isListening ())
-        {
-            connect (m_server, SIGNAL(messageReceived (const QString &)),
-                     this,     SIGNAL(messageReceived (const QString &)));
-            connect (m_server, SIGNAL(argumentsReceived (const QStringList &)),
-                     this,     SIGNAL(argumentsReceived (const QStringList &)));
-            connect (m_server, SIGNAL(variantReceived (const QVariant &)),
-                     this,     SIGNAL(variantReceived (const QVariant &)));
-        }
+            connect (m_server, SIGNAL(objectReceived (const QVariant &)),
+                     this, SLOT(processObject (const QVariant &)));
         else
             qWarning ("SingleApplication: %s", qPrintable (m_server->errorString ()));
     }
@@ -148,17 +142,29 @@ bool SingleApplication::isRunning () const
 
 bool SingleApplication::sendMessage (const QString & message, int timeout /* = 500 */)
 {
-    return m_socket && m_socket->sendMessage (message, timeout);
+    QVariant object (message);
+    return sendObject (object, timeout);
 }
 
 bool SingleApplication::sendArguments (int timeout /* = 500 */)
 {
-    return m_socket && m_socket->sendArguments (arguments (), timeout);
+    QVariant object (arguments ());
+    return sendObject (object, timeout);
 }
 
-bool SingleApplication::sendVariant (const QVariant & variant, int timeout /* = 500 */)
+bool SingleApplication::sendObject (const QVariant & object, int timeout /* = 500 */)
 {
-    return m_socket && m_socket->sendVariant (variant, timeout);
+    return m_socket && m_socket->sendObject (object, timeout);
+}
+
+void SingleApplication::processObject (const QVariant & object)
+{
+    if (object.type () == QVariant::String)
+        emit messageReceived (object.toString ());
+    else if (object.type () == QVariant::StringList)
+        emit argumentsReceived (object.toStringList ());
+    else
+        emit objectReceived (object);
 }
 
 void SingleApplication::shareApplicationPid ()
@@ -171,4 +177,3 @@ qint64 SingleApplication::sharedPid ()
 {
     return * (qint64 *) m_sharedMemory->constData ();
 }
-
