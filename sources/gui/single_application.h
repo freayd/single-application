@@ -43,6 +43,7 @@ public:
     SingleApplication (const QString & key, int & argc, char ** argv);
     SingleApplication (const QString & key, int & argc, char ** argv, bool GUIenabled);
     SingleApplication (const QString & key, int & argc, char ** argv, Type type);
+    virtual ~SingleApplication ();
 
     bool isRunning () const;
 

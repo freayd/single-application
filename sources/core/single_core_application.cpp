@@ -36,6 +36,11 @@ SingleCoreApplication::SingleCoreApplication (const QString & key, int & argc, c
 {
 }
 
+SingleCoreApplication::~SingleCoreApplication ()
+{
+    delete d;
+}
+
 bool SingleCoreApplication::isRunning () const
 {
     return d->isRunning ();

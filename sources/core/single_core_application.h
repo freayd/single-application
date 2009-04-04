@@ -41,6 +41,7 @@ public:
     static void setDataStreamVersion (QDataStream::Version v);
 
     SingleCoreApplication (const QString & key, int & argc, char ** argv);
+    virtual ~SingleCoreApplication ();
 
     bool isRunning () const;
 

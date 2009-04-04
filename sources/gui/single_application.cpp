@@ -46,6 +46,11 @@ SingleApplication::SingleApplication (const QString & key, int & argc, char ** a
 {
 }
 
+SingleApplication::~SingleApplication ()
+{
+    delete d;
+}
+
 bool SingleApplication::isRunning () const
 {
     return d->isRunning ();
