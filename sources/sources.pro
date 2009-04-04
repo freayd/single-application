@@ -16,17 +16,5 @@
 ## along with SingleApplication. If not, see <http://www.gnu.org/licenses/>.
 #################################################################################
 
-VERSION = 0.0.0
-
-TEMPLATE = lib
-TARGET   = single_application
-
-QT += network
-
-HEADERS += single_application.h   \
-           application_server.h   \
-           application_socket.h
-SOURCES += single_application.cpp \
-           application_server.cpp \
-           application_socket.cpp
-
+TEMPLATE = subdirs
+SUBDIRS += core gui

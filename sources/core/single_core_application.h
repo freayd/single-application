@@ -16,22 +16,20 @@
 ** along with SingleApplication. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************************/
 
-#ifndef SINGLE_APPLICATION_H
-#define SINGLE_APPLICATION_H
+#ifndef SINGLE_CORE_APPLICATION_H
+#define SINGLE_CORE_APPLICATION_H
 
-#include <QtCore/QString>
+#include <QtCore/QCoreApplication>
 #include <QtCore/QDataStream>
-#include <QtGui/QApplication>
 
 
-class ApplicationServer;
-class ApplicationSocket;
+class SingleApplicationImpl;
 
-class QSharedMemory;
+class QString;
 class QStringList;
 class QVariant;
 
-class SingleApplication : public QApplication
+class SingleCoreApplication : public QCoreApplication
 {
     Q_OBJECT
 
@@ -42,7 +40,7 @@ public:
      */
     static void setDataStreamVersion (QDataStream::Version v);
 
-    SingleApplication (const QString & key, int & argc, char ** argv, Type type = GuiClient);
+    SingleCoreApplication (const QString & key, int & argc, char ** argv);
 
     bool isRunning () const;
 
@@ -60,15 +58,9 @@ private slots:
     void processObject (const QVariant & object);
 
 private:
-    void shareApplicationPid ();
-    qint64 sharedPid ();
-
-    const QString m_key;
-    bool m_isRunning;
-    QSharedMemory     * m_sharedMemory;
-    ApplicationServer * m_server;
-    ApplicationSocket * m_socket;
+    friend class SingleAppicationImpl;
+    SingleApplicationImpl * const d;
 
 };
 
-#endif // SINGLE_APPLICATION_H
+#endif // SINGLE_CORE_APPLICATION_H

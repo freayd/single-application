@@ -16,13 +16,14 @@
 ** along with SingleApplication. If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************************/
 
-#include "single_application.h"
+#include "single_application_impl.h"
 
 #include "application_server.h"
 #include "application_socket.h"
 
+#include <QtCore/QCoreApplication>
+#include <QtCore/QObject>
 #include <QtCore/QSharedMemory>
-#include <QtCore/QStringList>
 #include <QtCore/QVariant>
 #include <QtNetwork/QLocalServer>
 #include <QtNetwork/QLocalSocket>
@@ -33,16 +34,11 @@
 #endif
 
 
-void SingleApplication::setDataStreamVersion (QDataStream::Version v)
-{
-    ApplicationSocket::setDataStreamVersion (v);
-}
-
-SingleApplication::SingleApplication (const QString & key, int & argc, char ** argv, Type type /* = GuiClient */)
-    : QApplication (argc, argv, type), m_key (key), m_server (0), m_socket (0)
+SingleApplicationImpl::SingleApplicationImpl (const QString & key, QObject * parent)
+    : q (parent), m_key (key), m_server (0), m_socket (0)
 {
     // Determine if the application is already running.
-    m_sharedMemory = new QSharedMemory (m_key + "sharedpid", this);
+    m_sharedMemory = new QSharedMemory (m_key + "sharedpid", parent);
     if (m_sharedMemory->create (sizeof (qint64)))
     {
         m_isRunning = false;
@@ -93,7 +89,7 @@ SingleApplication::SingleApplication (const QString & key, int & argc, char ** a
     const QString socketName (m_key + "singleapplication");
     if (m_isRunning)
     {
-        m_socket = new ApplicationSocket (this);
+        m_socket = new ApplicationSocket (parent);
         m_socket->connectToServer (socketName);
         if (! m_socket->waitForConnected (3000))
         {
@@ -118,7 +114,7 @@ SingleApplication::SingleApplication (const QString & key, int & argc, char ** a
         }
 #endif
 
-        m_server = new ApplicationServer (this);
+        m_server = new ApplicationServer (parent);
         if (! m_server->listen (socketName) &&
                 m_server->serverError () == QAbstractSocket::AddressInUseError)
         {
@@ -128,52 +124,25 @@ SingleApplication::SingleApplication (const QString & key, int & argc, char ** a
         }
 
         if (m_server->isListening ())
-            connect (m_server, SIGNAL(objectReceived (const QVariant &)),
-                     this, SLOT(processObject (const QVariant &)));
+            QObject::connect (m_server, SIGNAL(objectReceived (const QVariant &)),
+                              q, SLOT(processObject (const QVariant &)));
         else
             qWarning ("SingleApplication: %s", qPrintable (m_server->errorString ()));
     }
 }
 
-bool SingleApplication::isRunning () const
-{
-    return m_isRunning;
-}
-
-bool SingleApplication::sendMessage (const QString & message, int timeout /* = 500 */)
-{
-    QVariant object (message);
-    return sendObject (object, timeout);
-}
-
-bool SingleApplication::sendArguments (int timeout /* = 500 */)
-{
-    QVariant object (arguments ());
-    return sendObject (object, timeout);
-}
-
-bool SingleApplication::sendObject (const QVariant & object, int timeout /* = 500 */)
+bool SingleApplicationImpl::sendObject (const QVariant & object, int timeout /* = 500 */)
 {
     return m_socket && m_socket->sendObject (object, timeout);
 }
 
-void SingleApplication::processObject (const QVariant & object)
+void SingleApplicationImpl::shareApplicationPid ()
 {
-    if (object.type () == QVariant::String)
-        emit messageReceived (object.toString ());
-    else if (object.type () == QVariant::StringList)
-        emit argumentsReceived (object.toStringList ());
-    else
-        emit objectReceived (object);
-}
-
-void SingleApplication::shareApplicationPid ()
-{
-    const qint64 pid = applicationPid ();
+    const qint64 pid = QCoreApplication::applicationPid ();
     memcpy (m_sharedMemory->data (), & pid, sizeof (qint64));
 }
 
-qint64 SingleApplication::sharedPid ()
+qint64 SingleApplicationImpl::sharedPid ()
 {
     return * (qint64 *) m_sharedMemory->constData ();
 }
