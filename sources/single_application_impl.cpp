@@ -69,7 +69,8 @@ SingleApplicationImpl::SingleApplicationImpl (const QString & key, QObject * par
             m_sharedMemory->unlock ();
         }
         else
-            qWarning ("SingleApplication: %s", qPrintable (m_sharedMemory->errorString ()));
+            qWarning ("%s: %s", q->metaObject ()->className (),
+                                qPrintable (m_sharedMemory->errorString ()));
 
         if (m_isRunning)
         {
@@ -81,7 +82,8 @@ SingleApplicationImpl::SingleApplicationImpl (const QString & key, QObject * par
     else
     {
         m_isRunning = false;
-        qWarning ("SingleApplication: %s", qPrintable (m_sharedMemory->errorString ()));
+        qWarning ("%s: %s", q->metaObject ()->className (),
+                            qPrintable (m_sharedMemory->errorString ()));
         m_sharedMemory->deleteLater ();
         m_sharedMemory = 0;
     }
@@ -93,7 +95,8 @@ SingleApplicationImpl::SingleApplicationImpl (const QString & key, QObject * par
         m_socket->connectToServer (socketName);
         if (! m_socket->waitForConnected (3000))
         {
-            qWarning ("SingleApplication: %s", qPrintable (m_socket->errorString ()));
+            qWarning ("%s: %s", q->metaObject ()->className (),
+                                qPrintable (m_socket->errorString ()));
             m_socket->deleteLater ();
             m_socket = 0;
         }
@@ -124,7 +127,8 @@ SingleApplicationImpl::SingleApplicationImpl (const QString & key, QObject * par
         }
 
         if (! m_server->isListening ())
-            qWarning ("SingleApplication: %s", qPrintable (m_server->errorString ()));
+            qWarning ("%s: %s", q->metaObject ()->className (),
+                                qPrintable (m_server->errorString ()));
     }
 }
 

@@ -103,11 +103,13 @@ void ApplicationSocket::readData ()
 
     const QMetaObject * qMetaObject = q->metaObject ();
     if (! qMetaObject->method (qMetaObject->indexOfSignal (signal)).invoke (q, argument))
-        qWarning ("ApplicationSocket: Failed to emit signal %s.", signal);
+        qWarning ("%s: Failed to emit signal %s.", q->metaObject ()->className (),
+                                                   signal);
 }
 
 void ApplicationSocket::displayError (QLocalSocket::LocalSocketError error)
 {
     if (error != PeerClosedError)
-        qWarning ("ApplicationSocket: %s", qPrintable (errorString ()));
+        qWarning ("%s: %s", q->metaObject ()->className (),
+                            qPrintable (errorString ()));
 }
