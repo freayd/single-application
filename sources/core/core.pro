@@ -21,6 +21,7 @@ VERSION = 0.0.0
 TEMPLATE = lib
 QT -= gui
 QT += network
+CONFIG += no_keywords
 
 TARGET  = single_core_application
 DESTDIR = ../../lib

@@ -20,6 +20,7 @@ VERSION = 0.0.0
 
 TEMPLATE = lib
 QT += network
+CONFIG += no_keywords
 
 TARGET  = single_application
 DESTDIR = ../../lib

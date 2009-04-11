@@ -36,7 +36,7 @@ public:
 
     bool sendObject (const QVariant & object, int timeout);
 
-private slots:
+private Q_SLOTS:
     void readData ();
     void displayError (QLocalSocket::LocalSocketError error);
 

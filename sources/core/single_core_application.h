@@ -45,12 +45,12 @@ public:
 
     bool isRunning () const;
 
-public slots:
+public Q_SLOTS:
     bool sendMessage   (const QString & message, int timeout = 500);
     bool sendArguments (int timeout = 500);
     bool sendObject    (const QVariant & object, int timeout = 500);
 
-signals:
+Q_SIGNALS:
     void messageReceived   (const QString     & message  );
     void argumentsReceived (const QStringList & arguments);
     void objectReceived    (const QVariant    & object   );
