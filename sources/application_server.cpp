@@ -20,8 +20,6 @@
 
 #include "application_socket.h"
 
-#include <QtCore/QVariant>
-
 
 ApplicationServer::ApplicationServer (QObject * parent /* = 0 */)
     : QLocalServer (parent)
@@ -30,11 +28,8 @@ ApplicationServer::ApplicationServer (QObject * parent /* = 0 */)
 
 void ApplicationServer::incomingConnection (quintptr socketDescriptor)
 {
-    ApplicationSocket * socket = new ApplicationSocket (this);
+    ApplicationSocket * socket = new ApplicationSocket (parent (), this);
     connect (socket, SIGNAL(disconnected ()), socket, SLOT(deleteLater ()));
-
-    connect (socket, SIGNAL(objectReceived (const QVariant &)),
-             this,   SIGNAL(objectReceived (const QVariant &)));
 
     socket->setSocketDescriptor (socketDescriptor);
 }

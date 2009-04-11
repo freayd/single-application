@@ -31,9 +31,6 @@ class ApplicationServer : public QLocalServer
 public:
     ApplicationServer (QObject * parent = 0);
 
-signals:
-    void objectReceived (const QVariant & object);
-
 protected:
     void incomingConnection (quintptr socketDescriptor);
 

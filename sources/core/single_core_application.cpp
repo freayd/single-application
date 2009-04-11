@@ -60,15 +60,5 @@ bool SingleCoreApplication::sendArguments (int timeout /* = 500 */)
 
 bool SingleCoreApplication::sendObject (const QVariant & object, int timeout /* = 500 */)
 {
-    return d-sendObject (object, timeout);
-}
-
-void SingleCoreApplication::processObject (const QVariant & object)
-{
-    if (object.type () == QVariant::String)
-        emit messageReceived (object.toString ());
-    else if (object.type () == QVariant::StringList)
-        emit argumentsReceived (object.toStringList ());
-    else
-        emit objectReceived (object);
+    return d->sendObject (object, timeout);
 }

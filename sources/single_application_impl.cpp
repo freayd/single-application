@@ -123,10 +123,7 @@ SingleApplicationImpl::SingleApplicationImpl (const QString & key, QObject * par
             m_server->listen (socketName);
         }
 
-        if (m_server->isListening ())
-            QObject::connect (m_server, SIGNAL(objectReceived (const QVariant &)),
-                              q, SLOT(processObject (const QVariant &)));
-        else
+        if (! m_server->isListening ())
             qWarning ("SingleApplication: %s", qPrintable (m_server->errorString ()));
     }
 }

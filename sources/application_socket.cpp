@@ -19,6 +19,10 @@
 #include "application_socket.h"
 
 #include <QtCore/QByteArray>
+#include <QtCore/QMetaMethod>
+#include <QtCore/QMetaObject>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
 
@@ -31,8 +35,8 @@ void ApplicationSocket::setDataStreamVersion (QDataStream::Version v)
     s_dataStreamVersion = new int (v);
 }
 
-ApplicationSocket::ApplicationSocket (QObject * parent /* = 0 */)
-    : QLocalSocket (parent), m_blockSize (0)
+ApplicationSocket::ApplicationSocket (QObject * qPointer, QObject * parent /* = 0 */)
+    : QLocalSocket (parent), q (qPointer), m_blockSize (0)
 {
     connect (this, SIGNAL(readyRead ()), SLOT(readData ()));
     connect (this, SIGNAL(error (QLocalSocket::LocalSocketError)),
@@ -79,7 +83,27 @@ void ApplicationSocket::readData ()
     in >> object;
     m_blockSize = 0;
 
-    emit objectReceived (object);
+    const char * signal;
+    QGenericArgument argument;
+    if (object.type () == QVariant::String)
+    {
+        signal = "messageReceived(QString)";
+        argument = Q_ARG(QString, object.toString ());
+    }
+    else if (object.type () == QVariant::StringList)
+    {
+        signal = "argumentsReceived(QStringList)";
+        argument = Q_ARG(QStringList, object.toStringList ());
+    }
+    else
+    {
+        signal = "objectReceived(QVariant)";
+        argument = Q_ARG(QVariant, object);
+    }
+
+    const QMetaObject * qMetaObject = q->metaObject ();
+    if (! qMetaObject->method (qMetaObject->indexOfSignal (signal)).invoke (q, argument))
+        qWarning ("ApplicationSocket: Failed to emit signal %s.", signal);
 }
 
 void ApplicationSocket::displayError (QLocalSocket::LocalSocketError error)

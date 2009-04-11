@@ -57,9 +57,6 @@ signals:
     void argumentsReceived (const QStringList & arguments);
     void objectReceived    (const QVariant    & object   );
 
-private slots:
-    void processObject (const QVariant & object);
-
 private:
     friend class SingleAppicationImpl;
     SingleApplicationImpl * const d;

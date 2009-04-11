@@ -37,7 +37,6 @@ public:
     inline bool isRunning () const { return m_isRunning; }
 
     bool sendObject (const QVariant & object, int timeout = 500);
-    void processObject (const QVariant & object);
 
 private:
     void shareApplicationPid ();

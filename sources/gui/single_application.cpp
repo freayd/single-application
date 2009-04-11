@@ -72,13 +72,3 @@ bool SingleApplication::sendObject (const QVariant & object, int timeout /* = 50
 {
     return d-sendObject (object, timeout);
 }
-
-void SingleApplication::processObject (const QVariant & object)
-{
-    if (object.type () == QVariant::String)
-        emit messageReceived (object.toString ());
-    else if (object.type () == QVariant::StringList)
-        emit argumentsReceived (object.toStringList ());
-    else
-        emit objectReceived (object);
-}

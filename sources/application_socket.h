@@ -32,13 +32,9 @@ class ApplicationSocket : public QLocalSocket
 public:
     static void setDataStreamVersion (QDataStream::Version v);
 
-    ApplicationSocket (QObject * parent = 0);
+    ApplicationSocket (QObject * qPointer, QObject * parent = 0);
 
-public slots:
     bool sendObject (const QVariant & object, int timeout);
-
-signals:
-    void objectReceived (const QVariant & object);
 
 private slots:
     void readData ();
@@ -47,6 +43,7 @@ private slots:
 private:
     static int * s_dataStreamVersion;
 
+    QObject * const q;
     quint64 m_blockSize;
 
 };
